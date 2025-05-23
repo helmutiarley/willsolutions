@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Building } from 'lucide-react';
@@ -7,6 +8,7 @@ const TrustedBrands = () => {
     { name: 'Mikrotik', logoUrl: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/b7282850-a0da-4f04-babe-1f8136be4773/76acf99165a7265b8487bdca0bd02bb8.png', alt: 'Mikrotik Logo' },
     { name: 'TP-Link', logoUrl: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/b7282850-a0da-4f04-babe-1f8136be4773/18b15a9f712d14426ed989da53471a7c.png', alt: 'TP-Link Logo' },
     { name: 'D-Link', logoUrl: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/b7282850-a0da-4f04-babe-1f8136be4773/a79eb3fb03603654a100ceec665f9d15.png', alt: 'D-Link Logo' },
+    { name: 'Intelbras', logoUrl: 'https://storage.googleapis.com/hostinger-horizons-assets-prod/b7282850-a0da-4f04-babe-1f8136be4773/4fe1bf467a82b9bb3853e7a6494970c0.png', alt: 'Intelbras Logo' },
   ];
 
   const duplicatedLogos = [...brandLogos, ...brandLogos];
@@ -30,7 +32,7 @@ const TrustedBrands = () => {
             x: ['0%', '-100%'],
             transition: {
               ease: 'linear',
-              duration: 20, 
+              duration: 25, 
               repeat: Infinity,
             }
           }}
