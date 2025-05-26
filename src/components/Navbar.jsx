@@ -1,151 +1,103 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, Menu, X } from 'lucide-react';
+import { Menu, X, Tv, Film, CalendarDays, Sparkles, Info, Phone } from 'lucide-react';
 
 const Navbar = () => {
-  const [activeSection, setActiveSection] = useState('hero');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(id);
-      setIsMobileMenuOpen(false); 
-    }
-  };
+  const newLogoUrl = "https://storage.googleapis.com/hostinger-horizons-assets-prod/b7282850-a0da-4f04-babe-1f8136be4773/9007fd7a5f2e83dbd2813094d8de856b.png";
 
   useEffect(() => {
-    const sections = ['hero', 'services', 'plans', 'streaming-requirements'];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { threshold: 0.5 } 
-    );
-
-    sections.forEach(id => {
-      const element = document.getElementById(id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      sections.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-          observer.unobserve(element);
-        }
-      });
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const toggleMenu = () => setIsOpen(!isOpen);
+
   const navItems = [
-    { id: 'hero', label: 'Início' },
-    { id: 'services', label: 'Serviços' },
-    { id: 'plans', label: 'Planos de TV' },
-    { id: 'streaming-requirements', label: 'Requisitos' },
+    { name: 'Início', href: '#home', icon: <Tv size={18} /> },
+    { name: 'Planos', href: '#plans', icon: <Film size={18} /> },
+    { name: 'Serviços', href: '#services', icon: <Sparkles size={18} /> },
+    { name: 'Sobre', href: '#about', icon: <Info size={18} /> },
+    { name: 'Contato', href: '#contact', icon: <Phone size={18} /> },
   ];
 
-  const mobileMenuVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } }
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id.substring(1));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsOpen(false); 
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen ? 'bg-background/95 backdrop-blur-lg shadow-xl' : 'bg-transparent backdrop-blur-none shadow-none'
-      }`}
+    <motion.nav 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen ? 'bg-slate-900/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: 'spring', stiffness: 50, duration: 0.8 }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center cursor-pointer"
-            onClick={() => scrollToSection('hero')}
-          >
-            <Wifi className="h-8 w-8 text-primary mr-2" />
-            <span className="text-2xl font-bold gradient-text">Will Solutions</span>
-          </motion.div>
-          
-          <div className="hidden md:flex space-x-1">
+          <div className="flex-shrink-0">
+            <a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('#home'); }} className="flex items-center">
+              <img 
+                src={newLogoUrl} 
+                alt="WillTV Logo" 
+                className="h-10 md:h-12 w-auto" 
+              />
+            </a>
+          </div>
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <motion.button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ease-out group
-                  ${activeSection === item.id ? 'text-primary' : 'text-foreground hover:text-primary/80'}
-                `}
-                whileTap={{ scale: 0.95 }}
-                whileHover={{ y: -2 }}
+              <a
+                key={item.name}
+                href={item.href}
+                onClick={(e) => { e.preventDefault(); scrollToSection(item.href); }}
+                className="flex items-center text-slate-200 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 group"
               >
-                {item.label}
-                <AnimatePresence>
-                  {activeSection === item.id && (
-                    <motion.span
-                      layoutId="underline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                </AnimatePresence>
-              </motion.button>
+                {item.icon}
+                <span className="ml-2">{item.name}</span>
+                <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-sky-400"></span>
+              </a>
             ))}
           </div>
-
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-foreground p-2 rounded-md hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+              onClick={toggleMenu}
+              className="text-slate-200 hover:text-sky-400 focus:outline-none p-2"
               aria-label="Abrir menu"
             >
-              {isMobileMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
       </div>
-
+      {/* Mobile Menu */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {isOpen && (
           <motion.div
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg shadow-xl pb-4"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden bg-slate-900/95 backdrop-blur-md absolute top-full left-0 right-0 shadow-xl overflow-hidden"
           >
-            <div className="flex flex-col space-y-2 px-4 pt-2">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`block px-3 py-3 text-base font-medium rounded-md text-left
-                    ${activeSection === item.id ? 'bg-primary/20 text-primary' : 'text-foreground hover:bg-primary/10 hover:text-primary/90'}
-                  `}
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => { e.preventDefault(); scrollToSection(item.href); }}
+                  className="flex items-center text-slate-200 hover:bg-slate-800 hover:text-sky-400 block px-3 py-3 rounded-md text-base font-medium transition-colors duration-300"
                 >
-                  {item.label}
-                </button>
+                  {item.icon}
+                  <span className="ml-3">{item.name}</span>
+                </a>
               ))}
             </div>
           </motion.div>
